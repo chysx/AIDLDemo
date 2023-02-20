@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AIDL Server.iml" filepath="$PROJECT_DIR$/AIDL Server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AIDL_Server.iml" filepath="$PROJECT_DIR$/.idea/modules/AIDL_Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AIDL_Server.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.iml" filepath="$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.main.iml" filepath="$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/client/AIDL_Server.client.unitTest.iml" />
     </modules>
   </component>
 </project>

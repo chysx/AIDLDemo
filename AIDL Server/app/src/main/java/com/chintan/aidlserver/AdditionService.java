@@ -11,13 +11,20 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.List;
 
 public class AdditionService extends Service {
+	static String tag = "AdditionService";
+
+	final RemoteCallbackList<INumCallback> mCallbacks = new RemoteCallbackList<INumCallback>();
 
 	@Nullable
 	@Override
@@ -28,6 +35,12 @@ public class AdditionService extends Service {
 	private final IAdd.Stub mBinder = new IAdd.Stub() {
 		@Override
 		public int addNumbers(int num1, int num2) throws RemoteException {
+			try {
+				Thread.sleep(3000L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			Log.e(tag, Thread.currentThread().getName());
 			return num1 + num2;
 		}
 
@@ -74,6 +87,30 @@ public class AdditionService extends Service {
 				return;
 			}
 			startActivity(intent);
+		}
+
+		@Override
+		public void registerCallback(INumCallback callback) throws RemoteException {
+			Log.e(tag, Thread.currentThread().getName());
+			if (callback != null) {
+				mCallbacks.register(callback);
+				try {
+					for (int i = 1; i < 10; i++) {
+						callback.call(i);
+						Thread.sleep(1000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+		@Override
+		public void unregisterCallback(INumCallback callback) throws RemoteException {
+			if (callback != null) {
+				mCallbacks.unregister(callback);
+			}
 		}
 	};
 }
