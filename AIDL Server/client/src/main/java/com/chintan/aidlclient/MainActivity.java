@@ -25,12 +25,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 	private EditText num1, num2;
-	private Button btnAdd, btnNonPremitive, btnCall;
+	private Button btnAdd, btnNonPremitive, btnCall, btnCallback;
 	private TextView total;
 	protected IAdd addService;
 	private String Tag = "Client Application";
 	private String serverAppUri = "com.chintan.aidlserver";
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		btnNonPremitive.setOnClickListener(this);
 
 		total = (TextView) findViewById(R.id.total);
+
+		btnCallback = findViewById(R.id.btnCallBack);
+		btnCallback.setOnClickListener(this);
 
 		initConnection();
 	}
@@ -91,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private INumCallback mCallback = new INumCallback.Stub() {
 		@Override
 		public void call(final int num) throws RemoteException {
-			Log.e("123", Thread.currentThread().getName() + "  calculation" + num);
+			/// 如果是在客户端主线程中注册的回调，那么该段代码会在主线程中执行，否则会在子线程中执行（可以试试）
+			Log.e(Tag, Thread.currentThread().getName() + "  calculation" + num);
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	@Override
 	public void onClick(View view) {
-		Log.e("ServiceConnection", Thread.currentThread().getName());
+		Log.e(Tag, "onclick	当前线程" + Thread.currentThread().getName());
 		if (appInstalledOrNot(serverAppUri)) {
 			switch (view.getId()) {
 
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 							total.setText("Result: " + addService
 									.addNumbers(Integer.parseInt(num1.getText().toString()),
 											Integer.parseInt(num2.getText().toString())));
-							Log.e("ServiceConnection", "add 执行完成");
+							Log.e(Tag, "add 执行完成");
 
 
 						} catch (RemoteException e) {
@@ -148,25 +151,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 					break;
 
 				case R.id.btnCall:
+					try {
+						addService.placeCall("1234567890");
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+					break;
+				case R.id.btnCallBack:
 					new Thread(){
 						@Override
 						public void run() {
 							try {
+								// 注册回调最好是在子线程中，因为服务端触发回调的时机客户端是不知道的
+								// 因此这段代码需要放在子线程中，否则，会阻塞主线程（虽然回调具体的执行是在服务端的Binder线程池中执行，但是会在客户端的调用处阻塞客户端的主线程）
 								addService.registerCallback(mCallback);
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}
 						}
 					}.start();
-					Log.e("ServiceConnection", "callback 执行完成");
-
-//					try {
-//						addService.placeCall("1234567890");
-//					} catch (RemoteException e) {
-//						e.printStackTrace();
-//					}
-
-
+					Log.e(Tag, "callback 执行完成");
 					break;
 			}
 		} else {

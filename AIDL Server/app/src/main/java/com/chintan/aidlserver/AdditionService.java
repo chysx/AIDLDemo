@@ -24,11 +24,21 @@ import java.util.List;
 public class AdditionService extends Service {
 	static String tag = "AdditionService";
 
+	// 一个非常重要的类，可以用来存储客户端注册的回调对象
 	final RemoteCallbackList<INumCallback> mCallbacks = new RemoteCallbackList<INumCallback>();
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		// 在主线程中执行
+		Log.e(tag, "onCreate   " + Thread.currentThread().getName());
+	}
 
 	@Nullable
 	@Override
 	public IBinder onBind(Intent intent) {
+		// 在主线程中执行
+		Log.e(tag, "onBind   " + Thread.currentThread().getName());
 		return mBinder;
 	}
 
@@ -40,6 +50,7 @@ public class AdditionService extends Service {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			// 在Binder线程池中执行
 			Log.e(tag, Thread.currentThread().getName());
 			return num1 + num2;
 		}
@@ -91,11 +102,14 @@ public class AdditionService extends Service {
 
 		@Override
 		public void registerCallback(INumCallback callback) throws RemoteException {
+			// 在Binder线程池中执行
 			Log.e(tag, Thread.currentThread().getName());
 			if (callback != null) {
+				// 将客户端传来的回调对象注册到RemoteCallbackList中
 				mCallbacks.register(callback);
 				try {
 					for (int i = 1; i < 10; i++) {
+						// 执行回调
 						callback.call(i);
 						Thread.sleep(1000);
 					}
@@ -109,6 +123,7 @@ public class AdditionService extends Service {
 		@Override
 		public void unregisterCallback(INumCallback callback) throws RemoteException {
 			if (callback != null) {
+				// 将回调对象从RemoteCallbackList中解除注册
 				mCallbacks.unregister(callback);
 			}
 		}
